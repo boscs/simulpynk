@@ -36,5 +36,5 @@ g.add(operators.Exp_avg("addAB"), "foo")
 ```
 will give :
 
-![Rendered version graph](https://imgur.com/kgi86es)
+![Rendered version graph](https://raw.githubusercontent.com/boscs/simulpynk/master/Pictures/graphRendered.png)
 
