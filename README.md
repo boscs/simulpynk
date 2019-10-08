@@ -24,26 +24,17 @@ The short anwser is [here](https://en.wikipedia.org/wiki/Graph_(discrete_mathema
 A graph object represent a dataflow graph. It's created then filled declaratively :
 
 ```python
-g = ComputeGraph(),
-import math
 def B(t,c,d):
-  return math.cos(t)+c-(d*t)
-g.add(Operators.add("A B"))
-g.add("B",B)
-g.add(lambda A,B: A+B, "addAB")
+    return math.cos(t)+c-(d*t)
+g = ComputeGraph()
+g.add(B)#created a var B that depends on t,c and d using the above function
+g.add(operators.Add("B A"),"AplusB")
+g.add(lambda A,B: A+B, "addAB")#created a var 'addAB' that depends on A and B using a lambda
 g.add(lambda t: math.cos(t),"A")
+g.add(operators.Avg("B"))#created a var 'Avg_B' using operators
+g.add(operators.Exp_avg("addAB"), "foo")
 ```
+will give :
 
-digraph DAG {
-AplusB[label="AplusB = f(A,  , B)"]
-A->AplusB[color="green"]
- ->AplusB[color="green"]
-B->AplusB[color="green"]
-A[label="A = f(t)"]
-t->A[color="green"]
- [label=" "]
-B[label="B"]
-addAB[label="addAB = f(A, B)"]
-A->addAB[color="green"]
-B->addAB[color="green"]
-t[label="t"]}
+![Rendered version graph](https://imgur.com/kgi86es)
+
