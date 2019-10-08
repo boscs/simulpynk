@@ -89,6 +89,5 @@ class Const(Operator):
     def __init__(self, val, name:str):
         super().__init__([],name = name,observes = True)
         self._val = val
-        #s
     def run(self):return self._val
 

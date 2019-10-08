@@ -4,7 +4,7 @@ __all__ = ['read_nb', 'check_re', 'is_export', 'find_default_export', 'export_na
            'get_name', 'qual_name', 'source_nb', 'script2notebook', 'diff_nb_script']
 
 #Cell
-from ..imports import *
+from imports import *
 from .core import *
 import nbformat,inspect
 from nbformat.sign import NotebookNotary
