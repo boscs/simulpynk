@@ -1,2 +1,7 @@
 .ipynb_checkpoints/*
-.ipynb_checkpoints
+*.*/.ipynb_checkpoints
+.git
+.git/*
+00_test.ipynb
+*.*/__pycache__/*.*
+*.*
