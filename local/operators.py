@@ -4,12 +4,11 @@ __all__ = ['Operator', 'Avg', 'Acc', 'Exp_avg', 'Linear', 'Add', 'Delay', 'Const
 
 #Cell
 class Operator():
-    def __init__(self,input_var_names:list=[],namePrefix:str = None, name:str = None,observes:bool = False):
-        if namePrefix == None and name == None : raise Exception("You gotta give a name the output result")
-        if name == None: self.__name__ = f"{namePrefix}_{'_'.join(input_var_names)}"
-        else : self.__name__ = name
-        if len(input_var_names) == 1 : input_var_names[0].split(" ")
+    def __init__(self,input_var_names:list=[],namePrefix:str = None, observes:bool = False):
+        self.__name__ = f"{namePrefix}_{'_'.join(input_var_names)}"
+        if type(input_var_names) == str : input_var_names = [input_var_names]
         self._args = [*input_var_names]
+        if len(input_var_names) == 1: self._args = input_var_names[0].split()
         self._observes = observes
         self._wasNeverRun = True
     def firstrun(self,*args):
@@ -34,8 +33,8 @@ class Avg(Operator):
         * `name` (optional) : str
 
     """
-    def __init__(self,input_var_name, name:str=None,):
-        super().__init__(input_var_names = [input_var_name],namePrefix = "Avg", name = name, observes = True)
+    def __init__(self,input_var_name):
+        super().__init__(input_var_names = [input_var_name],namePrefix = "Avg", observes = True)
         self._running_avg:float = 0
         self._running_count:int = 0
     def run(self,varin):
@@ -44,16 +43,16 @@ class Avg(Operator):
         return self._running_avg
 
 class Acc(Operator):
-    def __init__(self,input_var_name,name:str=None):
-        super().__init__(input_var_names = [input_var_name],namePrefix = "Acc",  name = name, observes = True)
+    def __init__(self,input_var_name):
+        super().__init__(input_var_names = [input_var_name],namePrefix = "Acc",  observes = True)
         self._running_sum:float = 0
     def run(self,varin):
         self._running_sum += varin
         return self._running_sum
 
 class Exp_avg(Operator):
-    def __init__(self,input_var_name, name:str=None, alpha = 0.9):
-        super().__init__(input_var_names = [input_var_name],namePrefix = "Exp_avg",  name = name,observes = True)
+    def __init__(self,input_var_name, alpha = 0.9):
+        super().__init__(input_var_names = [input_var_name],namePrefix = "Exp_avg", observes = True)
         self._running_avg:float = 0
         assert(0<alpha<1)
         self._alpha : float = alpha
@@ -63,21 +62,23 @@ class Exp_avg(Operator):
         return self._running_avg
 
 class Linear(Operator):
-    def __init__(self,input_var_name, name:str=None, gain = 1, bias =0):
-        super().__init__(input_var_names = [input_var_name], name = name)
+    def __init__(self,input_var_name, gain = 1, bias =0):
+        super().__init__(input_var_names = [input_var_name], namePrefix="Linear")
         self.gain = gain
         self.bias = bias
     def run(self,varin): return self.gain * varin + self.bias
 
 class Add(Operator):
     """Adds every vars passed as imputs"""
+    def __init__(self,*input_var_names):
+        super().__init__(*input_var_names, namePrefix="Add")
     def run(self,*inputs):
         ret = 0
         for inp in inputs : ret += inp
         return inp
 class Delay(Operator):
-    def __init__(self,input_var_name, init_val, delay_in_step:int=1, name:str=None):
-        super().__init__(input_var_names = [input_var_name],namePrefix = "Delayed",  name = name,observes = True)
+    def __init__(self,input_var_name, init_val, delay_in_step:int=1):
+        super().__init__(input_var_names = [input_var_name],namePrefix = "Delayed",  observes = True)
         assert(type(delay) == int)
         from collections import deque
         self._past_vals : deque = deque([init_val for i in range(delay_in_step)])
@@ -86,8 +87,8 @@ class Delay(Operator):
         return self._past_vals.popleft()
 
 class Const(Operator):
-    def __init__(self, val, name:str):
-        super().__init__([],name = name,observes = True)
+    def __init__(self, val):
+        super().__init__([], observes = True, namePrefix="Const")
         self._val = val
     def run(self):return self._val
 

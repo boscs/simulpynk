@@ -3,8 +3,9 @@
 __all__ = ['UnknownCGVar', 'NeverInitializedGcInput', 'BadlyNamedGcVar', 'PlaceHolderCGVal', 'CGVar', 'ComputeGraph']
 
 #Cell
-import local.operators
+import local.operators as operators
 import inspect
+import math
 class UnknownCGVar(Exception): pass
 class NeverInitializedGcInput(Exception): pass
 class BadlyNamedGcVar(Exception): pass
@@ -118,5 +119,5 @@ class ComputeGraph():
         ret = 'digraph '  + self._name +" {"
         for k,var in self._vars.items():
             ret += '\n' + str(var.__repr__())
-        ret += "}"
+        ret += "\n}"
         return ret
