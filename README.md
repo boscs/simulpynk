@@ -33,3 +33,17 @@ g.add("B",B)
 g.add(lambda A,B: A+B, "addAB")
 g.add(lambda t: math.cos(t),"A")
 ```
+
+digraph DAG {
+AplusB[label="AplusB = f(A,  , B)"]
+A->AplusB[color="green"]
+ ->AplusB[color="green"]
+B->AplusB[color="green"]
+A[label="A = f(t)"]
+t->A[color="green"]
+ [label=" "]
+B[label="B"]
+addAB[label="addAB = f(A, B)"]
+A->addAB[color="green"]
+B->addAB[color="green"]
+t[label="t"]}
